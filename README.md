@@ -1,6 +1,6 @@
 # datastore-serializer
 
-A serializer that works in conjonction with [Google Cloud Datastore](https://cloud.google.com/datastore/docs/concepts/overview) to serialize pointer relationship
+A serializer that works in conjonction with [Google Cloud Datastore](https://cloud.google.com/datastore/docs/concepts/overview) to serialize pointer relationship. This is useful if you go the denormalization way.
 
 ## Installation
 
