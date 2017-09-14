@@ -192,6 +192,7 @@ func saveEntity(entity interface{}, namespace string, multiple bool, level int) 
 func extractEntityProperties(namespace string, ps *datastore.PropertyList) (*datastore.Key, datastore.PropertyList) {
 	properties := datastore.PropertyList{}
 	var key *datastore.Key
+	propertyMap := map[string]bool{}
 
 	deleted := 0
 	for i := range *ps {
@@ -204,17 +205,20 @@ func extractEntityProperties(namespace string, ps *datastore.PropertyList) (*dat
 			currentNamespace = property.Name[:index]
 		}
 		if currentNamespace == namespace {
-			if strings.HasSuffix(property.Name, ".id") {
-				if key != nil {
-					break
+			name := strings.TrimPrefix(property.Name, currentNamespace+".")
+			if propertyMap[name] == false {
+				if name == "id" {
+					if key == nil {
+						key = property.Value.(*datastore.Key)
+					}
+				} else {
+					property.Name = name
+					properties = append(properties, property)
 				}
-				key = property.Value.(*datastore.Key)
-			} else {
-				property.Name = strings.TrimPrefix(property.Name, currentNamespace+".")
-				properties = append(properties, property)
+				propertyMap[name] = true
+				*ps = (*ps)[:j+copy((*ps)[j:], (*ps)[j+1:])]
+				deleted++
 			}
-			*ps = (*ps)[:j+copy((*ps)[j:], (*ps)[j+1:])]
-			deleted++
 		}
 	}
 	return key, properties
