@@ -23,7 +23,7 @@ The use of jsonapi is not mandatory, it will work for simple relation serializat
 type Post struct {
     ID       string     `datastore:"-" jsonapi:"primary,post"`
     Text     string     `datastore:"text,noindex" jsonapi:"attr,text"`
-    Comments []*Comment `datastore:"-" jsonapi:"comments,text" serializer:"relation,comments"`
+    Comments []*Comment `datastore:"-" jsonapi:"relation,comments" serializer:"relation,comments"`
 }
 
 type Comment struct {
