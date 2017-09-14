@@ -21,13 +21,13 @@ The use of jsonapi is not mandatory, it will work with simple relationships.
 ```golang
 
 type Post struct {
-    ID       string     `datastore:"-" jsonapi:"primary,post"`
+    ID       string     `datastore:"-" jsonapi:"primary,post" serializer:"primary,post"`
     Text     string     `datastore:"text,noindex" jsonapi:"attr,text"`
     Comments []*Comment `datastore:"-" jsonapi:"relation,comments" serializer:"relation,comments"`
 }
 
 type Comment struct {
-    ID   string `datastore:"-" jsonapi:"primary,comment"`
+    ID   string `datastore:"-" jsonapi:"primary,comment" serializer:"primary,comment"`
     Text string `datastore:"text,noindex" jsonapi:"attr,text"`
 }
 
