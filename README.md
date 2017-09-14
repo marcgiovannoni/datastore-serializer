@@ -1,6 +1,6 @@
 # datastore-serializer
 
-A serializer that works in conjonction with [Google Cloud Datastore](https://cloud.google.com/datastore/docs/concepts/overview) to serialize pointer relationship. This is useful if you go the denormalization way.
+A serializer that works in conjonction with [Google Cloud Datastore](https://cloud.google.com/datastore/docs/concepts/overview) to serialize relationships defined as pointers. This is useful if you go the denormalization way.
 
 ## Installation
 
@@ -12,7 +12,7 @@ go get github.com/marcgiovannoni/datastore-serializer
 
 This serializer has been written so working with [Google JSONAPI](https://github.com/google/jsonapi) and [Google Cloud Datastore](https://cloud.google.com/datastore/docs/concepts/overview) is easier.
 
-The use of jsonapi is not mandatory, it will work for simple relation serialization.
+The use of jsonapi is not mandatory, it will work with simple relationships.
 
 ### Requirements
 
