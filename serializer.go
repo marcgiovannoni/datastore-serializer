@@ -46,7 +46,7 @@ func SaveEntity(entity interface{}) (datastore.PropertyList, error) {
 
 func loadEntity(entity interface{}, ps *datastore.PropertyList, namespace string) error {
 	// Load entity properties
-	key, properties := extractEntityProperties(namespace, ps)
+	key, properties := extractEntityProperties(namespace, entity, ps)
 
 	if len(properties) == 0 {
 		return ErrNoMoreProperties
@@ -134,7 +134,9 @@ func saveEntity(entity interface{}, namespace string, multiple bool, level int) 
 	for i := 0; i < len(ps); i++ {
 		property := &ps[i]
 		property.Name = strings.Trim(namespace+"."+property.Name, ".")
-		property.Multiple = multiple
+		if !property.Multiple {
+			property.Multiple = multiple
+		}
 	}
 
 	for i := 0; i < entityValue.NumField(); i++ {
@@ -189,24 +191,30 @@ func saveEntity(entity interface{}, namespace string, multiple bool, level int) 
 	return ps, nil
 }
 
-func extractEntityProperties(namespace string, ps *datastore.PropertyList) (*datastore.Key, datastore.PropertyList) {
+func extractEntityProperties(namespace string, entity interface{}, ps *datastore.PropertyList) (*datastore.Key, datastore.PropertyList) {
 	properties := datastore.PropertyList{}
 	var key *datastore.Key
 	propertyMap := map[string]bool{}
+	entityNumField := reflect.ValueOf(entity).Elem().NumField()
 
 	deleted := 0
 	for i := range *ps {
 		j := i - deleted
 		property := (*ps)[j]
+
+		// Extract current namespace
 		index := strings.LastIndex(property.Name, ".")
 		hasNamespace := index != -1
 		currentNamespace := ""
 		if hasNamespace {
 			currentNamespace = property.Name[:index]
 		}
+
+		// If the namespace matches the current one
 		if currentNamespace == namespace {
 			name := strings.TrimPrefix(property.Name, currentNamespace+".")
-			if propertyMap[name] == false {
+			// If we don't have that property yet extract it
+			if len(propertyMap) < entityNumField {
 				if name == "id" {
 					if key == nil {
 						key = property.Value.(*datastore.Key)
